@@ -34,9 +34,56 @@ const resolvers = {
             console.log( 'email: ' + email );
             console.log( 'password: ' + password );
 
-            If (!user) {
-                
-            }
+            if ( !user ) {
+                console.log( 'resolvers.js if( !user )' );
+                throw new AuthenticationError( 'Incorrect credentials detected!' );
+            };
+
+            const correctPassword = await user.isCorrectPassword( password );
+
+            console.log( 'correctPassword: ');
+            console.log( correctPassword );
+
+            if (!correctPassqord) {
+                console.log( 'resolvers.js if( !correctPassword )' );
+                throw new AuthenticationError( 'Incorrect credentials detected!!' );
+            };
+
+            const token = signToken( user );
+
+            console.log( 'resolvers.js' );
+            console.log( 'token: ' + token );
+
+            return { token, user };
+        },
+        saveBook: async(parent, args, context ) => {
+            if ( context.user ) {
+                const updatedUser = await User.findByIdAndUpdate(
+                    { _id: context.user_id },
+                    { $addToSet: { savedBooks: args.input }},
+                    { new: true }
+                );
+
+                return updatedUser;
+            };
+
+            throw new AuthenticationError( 'User must be logged in!!' );
+        },
+        removeBook: async( parent, args, context ) => {
+            if ( context.user ) {
+                const updatedUser = await User.findOneAndUpdate (
+                    { _id: context.user._id },
+                    { $pull: { savedBooks: { bookId: args. bookId }}},
+                    { new: true }
+                );
+
+                return updatedUser;
+            };
+
+            throw new AuthenticationError('User must be logged in!!' );
         }
     }
-}
+};
+
+
+module.exports = resolvers;
