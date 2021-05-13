@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
@@ -10,7 +10,7 @@ import { REMOVE_BOOK } from '../utils/mutations';
 const SavedBooks = () => {
   const { loading, data } = useQuery( GET_ME );
   const [ removeBook ] = useMutation( REMOVE_BOOK );
-  const userData = date?.me || [];
+  const userData = data?.me || [];
 
   // use this to determine if `useEffect()` hook needs to run again
   const handleDeleteBook = async ( bookId ) => {
@@ -50,7 +50,7 @@ const SavedBooks = () => {
               ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
-        
+
         <CardColumns>
           {userData.savedBooks.map((book) => {
             return (
